@@ -43,34 +43,54 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #e5ddd5; min-height:
    LEFT — PREVIEW
 ══════════════════════════════ */
 .preview-panel {
-  flex: 0 0 370px;
+  flex: 0 0 320px;
   background: #f5f0e0;
   display: flex; flex-direction: column; align-items: center;
-  padding: 22px 14px 22px; border-right: 1px solid var(--border);
-  overflow: hidden; position: relative; gap: 12px;
+  padding: 18px 14px 18px; border-right: 1px solid var(--border);
+  overflow: hidden; position: relative; gap: 10px;
 }
 .preview-label { font-family: 'Cormorant Garamond', serif; font-size: 11px; letter-spacing: .16em; color: #9a908a; text-transform: uppercase; align-self: flex-start; }
 
 /* Phone */
-.phone-wrap { width: 256px; flex-shrink: 0; }
+.phone-wrap { width: 220px; flex-shrink: 0; }
 .phone-shell {
   background: #12100d;
-  border-radius: 44px;
-  padding: 14px 10px;
-  box-shadow: 0 28px 70px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.07);
+  border-radius: 40px;
+  padding: 12px 9px;
+  box-shadow: 0 20px 56px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.07);
   position: relative;
   overflow: hidden;
 }
-.phone-notch { width: 84px; height: 22px; background: #12100d; border-radius: 0 0 16px 16px; position: absolute; top: 14px; left: 50%; transform: translateX(-50%); z-index: 5; }
+.phone-notch { width: 72px; height: 20px; background: #12100d; border-radius: 0 0 14px 14px; position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 5; }
 .phone-screen {
   background: var(--cream);
-  border-radius: 32px;
-  height: calc(100vh - 56px - 44px - 60px);
-  min-height: 480px; max-height: 680px;
+  border-radius: 28px;
+  height: calc(100vh - 56px - 40px - 56px);
+  min-height: 420px; max-height: 620px;
   overflow-y: auto; scroll-behavior: smooth;
   position: relative;
 }
 .phone-screen::-webkit-scrollbar { display: none; }
+
+/* ── RESIZE HANDLE ── */
+#resizeHandle {
+  width: 5px; flex-shrink: 0;
+  background: transparent;
+  cursor: col-resize;
+  position: relative;
+  transition: background .15s;
+  z-index: 50;
+}
+#resizeHandle:hover, #resizeHandle.dragging { background: #e87ba8; }
+#resizeHandle::after {
+  content: '';
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1px; height: 40px;
+  background: #ddd;
+  border-radius: 1px;
+}
+#resizeHandle:hover::after, #resizeHandle.dragging::after { background: #e87ba8; }
 
 /* Scroll dots */
 .dots { display: flex; gap: 5px; justify-content: center; }
@@ -516,7 +536,7 @@ textarea { resize: vertical; min-height: 88px; line-height: 1.8; }
 <div class="main">
 
 <!-- ══════ LEFT: PREVIEW ══════ -->
-<div class="preview-panel">
+<div class="preview-panel" id="previewPanel">
   <div class="preview-label">✦ 미리보기</div>
   <div style="position:sticky; top:22px; display:flex; flex-direction:column; align-items:center; gap:10px;">
     <div class="phone-wrap">
@@ -853,6 +873,9 @@ textarea { resize: vertical; min-height: 88px; line-height: 1.8; }
     </div>
   </div>
 </div>
+
+<!-- ══════ RESIZE HANDLE ══════ -->
+<div id="resizeHandle"></div>
 
 <!-- ══════ RIGHT: EDITOR ══════ -->
 <div class="editor-panel" id="EP">
@@ -2644,6 +2667,34 @@ function syncPreviewOrder(tabId) {
 }
 
 // 탭 전환 시 드래그 재초기화 (원래 switchTab에 통합)
+/* ═══ RESIZE HANDLE ═══ */
+;(function() {
+  const handle = document.getElementById('resizeHandle')
+  const preview = document.getElementById('previewPanel')
+  if (!handle || !preview) return
+  let startX = 0, startW = 0, dragging = false
+  const MIN_W = 260, MAX_W = 480
+  handle.addEventListener('mousedown', e => {
+    dragging = true; startX = e.clientX; startW = preview.offsetWidth
+    handle.classList.add('dragging')
+    document.body.style.cursor = 'col-resize'
+    document.body.style.userSelect = 'none'
+    e.preventDefault()
+  })
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return
+    const newW = Math.max(MIN_W, Math.min(MAX_W, startW + (e.clientX - startX)))
+    preview.style.flex = `0 0 ${newW}px`
+  })
+  document.addEventListener('mouseup', () => {
+    if (!dragging) return
+    dragging = false; handle.classList.remove('dragging')
+    document.body.style.cursor = ''; document.body.style.userSelect = ''
+  })
+  // 더블클릭: 기본값 리셋
+  handle.addEventListener('dblclick', () => { preview.style.flex = '0 0 320px' })
+})()
+
  sync(); onMsg(); buildGuestCarousel(); resetGuestTimer(); initReveal(); loadDraft()
 setTimeout(() => { initDrag('t-extra'); initDrag('t-photo') }, 400)
 // 기본 컬러로 전체 테마 초기화
