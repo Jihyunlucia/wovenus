@@ -19,7 +19,7 @@
   --acc: #8B6914;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Noto Sans KR', sans-serif; background: #e5ddd5; min-height: 100vh; display: flex; flex-direction: column; }
+body { font-family: 'Noto Sans KR', sans-serif; background: #e5ddd5; min-height: 100vh; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
 /* ── TOPBAR ── */
 .topbar {
@@ -64,7 +64,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #e5ddd5; min-height:
 .publish-url-copy:hover { color: #fff; }
 
 /* ── LAYOUT ── */
-.main { display: flex; flex: 1; overflow: hidden; height: calc(100vh - 56px); }
+.main { display: flex; flex-direction: row; flex: 1; min-height: 0; overflow: hidden; }
 
 /* ══════════════════════════════
    LEFT — PREVIEW
@@ -73,29 +73,23 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #e5ddd5; min-height:
   flex: 0 0 300px;
   background: #f5f0e0;
   display: flex; flex-direction: column; align-items: center;
-  padding: 12px 12px 12px; border-right: 1px solid var(--border);
-  overflow-y: auto; overflow-x: hidden; position: relative; gap: 6px;
+  padding: 12px 12px 8px; border-right: 1px solid var(--border);
+  overflow: hidden; position: relative; gap: 0;
 }
-.preview-label { font-family: 'Cormorant Garamond', serif; font-size: 11px; letter-spacing: .16em; color: #9a908a; text-transform: uppercase; align-self: flex-start; flex-shrink: 0; }
+.preview-label { font-family: 'Cormorant Garamond', serif; font-size: 11px; letter-spacing: .16em; color: #9a908a; text-transform: uppercase; align-self: flex-start; flex-shrink: 0; margin-bottom: 6px; }
 
 /* Phone — 베젤 없이 화면만, 아이폰 16 비율 (9:19.5) */
 .phone-wrap {
-  /* sticky: 에디터 스크롤해도 폰 화면 따라옴 */
-  position: sticky;
-  top: 0;
+  flex: 1; min-height: 0;
   display: flex; flex-direction: column;
-  align-items: center;
+  align-items: center; justify-content: center;
   width: 100%;
-  /* 뷰포트 기준 높이 — 상단바(56px) + 라벨+패딩(38px) 제외 */
-  height: calc(100vh - 56px - 38px);
-  flex-shrink: 0;
 }
 .phone-shell {
-  /* 베젤 없음 */
   background: none;
   border-radius: 0; padding: 0; box-shadow: none;
   position: relative;
-  /* 아이폰16 비율: 높이 기준으로 너비 자동 */
+  /* 높이 기준 → 아이폰16 비율로 너비 자동 결정 */
   height: 100%;
   max-height: 100%;
   aspect-ratio: 9 / 19.5;
@@ -552,10 +546,20 @@ textarea { resize: vertical; min-height: 88px; line-height: 1.8; }
 
 
 @media (max-width: 900px) {
-  .main { flex-direction: column; height: auto; overflow: visible; }
-  .preview-panel { flex: none; border-right: none; border-bottom: 1px solid var(--border); overflow: visible; padding: 18px 12px; }
-  .phone-wrap { width: 100%; max-width: 260px; flex: none; height: 480px; }
-  .phone-shell { height: 100%; }
+  /* 모바일: 세로 레이아웃 */
+  body { height: auto; overflow: auto; }
+  .main { flex-direction: column; min-height: auto; overflow: visible; }
+  .preview-panel {
+    flex: none; border-right: none; border-bottom: 1px solid var(--border);
+    overflow: visible; padding: 16px 16px 12px;
+    height: auto;
+  }
+  .phone-wrap {
+    flex: none; width: 100%;
+    align-items: center;
+    height: 420px;
+  }
+  .phone-shell { height: 100%; max-width: 200px; }
   .phone-screen { border-radius: 10px; }
   .editor-panel { overflow: visible; }
   .tab-bar { padding: 0 12px; }
@@ -1402,6 +1406,13 @@ function doSyncFromEditor() {
 EP.addEventListener('scroll', () => {
   if (syncT) clearTimeout(syncT)
   syncT = setTimeout(doSyncFromEditor, 70)
+
+  // 에디터 스크롤 비율 → 폰 화면도 같이 이동
+  const epMax = EP.scrollHeight - EP.clientHeight
+  if (epMax <= 0) return
+  const ratio = EP.scrollTop / epMax
+  const psMax = PS.scrollHeight - PS.clientHeight
+  if (psMax > 0) PS.scrollTop = ratio * psMax
 }, { passive: true })
 
 PS.addEventListener('scroll', () => {
