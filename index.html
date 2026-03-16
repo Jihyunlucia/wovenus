@@ -95,7 +95,7 @@ body {
    LEFT — PREVIEW
 ══════════════════════════════ */
 .preview-panel {
-  flex: 0 0 300px;
+  flex: 0 0 600px;
   min-width: 0;
   background: #f5f0e0;
   display: flex;
@@ -172,7 +172,7 @@ body {
   height: 100%;
 }
 .editor-panel::-webkit-scrollbar { width: 4px; }
-.editor-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
 
 /* MOBILE */
 @media (max-width: 900px) {
@@ -461,9 +461,8 @@ body {
 /* ══════════════════════════════
    RIGHT — EDITOR
 ══════════════════════════════ */
-.editor-panel { flex: 1; overflow-y: auto; background: #f2f2f2; }
-.editor-panel::-webkit-scrollbar { width: 4px; }
-.editor-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+
 
 /* sticky tab bar */
 .tab-bar {
@@ -625,8 +624,7 @@ textarea { resize: vertical; min-height: 88px; line-height: 1.8; }
   }
   .phone-shell { height: 100%; max-width: 200px; }
   .phone-screen { border-radius: 10px; }
-  .editor-panel { overflow: visible; }
-  .tab-bar { padding: 0 12px; }
+    .tab-bar { padding: 0 12px; }
   .ea { padding: 22px 14px 0; }
   .row { flex-direction: column; }
   .gal-grid { grid-template-columns: repeat(4, 1fr); }
@@ -2865,7 +2863,7 @@ function syncPreviewOrder(tabId) {
   const preview = document.getElementById('previewPanel')
   if (!handle || !preview) return
   let startX = 0, startW = 0, dragging = false
-  const MIN_W = 260, MAX_W = 480
+  const MIN_W = 360, MAX_W = 800
   handle.addEventListener('mousedown', e => {
     dragging = true; startX = e.clientX; startW = preview.offsetWidth
     handle.classList.add('dragging')
@@ -2884,7 +2882,7 @@ function syncPreviewOrder(tabId) {
     document.body.style.cursor = ''; document.body.style.userSelect = ''
   })
   // 더블클릭: 기본값 리셋
-  handle.addEventListener('dblclick', () => { preview.style.flex = '0 0 320px' })
+  handle.addEventListener('dblclick', () => { preview.style.flex = '0 0 600px' })
 })()
 
  sync(); onMsg(); buildGuestCarousel(); resetGuestTimer(); initReveal(); loadDraft()
