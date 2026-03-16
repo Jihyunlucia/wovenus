@@ -19,7 +19,6 @@
   --acc: #8B6914;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Noto Sans KR', sans-serif; background: #e5ddd5; min-height: 100vh; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
 /* ── TOPBAR ── */
 .topbar {
@@ -64,32 +63,73 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #e5ddd5; min-height:
 .publish-url-copy:hover { color: #fff; }
 
 /* ── LAYOUT ── */
-.main { display: flex; flex-direction: row; flex: 1; min-height: 0; overflow: hidden; }
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: #e5ddd5;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.topbar {
+  flex-shrink: 0;
+  height: 56px;
+}
+
+/* PC: 가로 레이아웃 */
+.main {
+  display: flex;
+  flex-direction: row !important;
+  flex: 1;
+  height: calc(100vh - 56px);
+  overflow: hidden;
+  min-height: 0;
+}
 
 /* ══════════════════════════════
    LEFT — PREVIEW
 ══════════════════════════════ */
 .preview-panel {
   flex: 0 0 300px;
+  min-width: 0;
   background: #f5f0e0;
-  display: flex; flex-direction: column; align-items: center;
-  padding: 12px 12px 8px; border-right: 1px solid var(--border);
-  overflow: hidden; position: relative; gap: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 12px 8px;
+  border-right: 1px solid #ddd0b0;
+  overflow: hidden;
+  position: relative;
+  gap: 0;
+  height: 100%;
 }
-.preview-label { font-family: 'Cormorant Garamond', serif; font-size: 11px; letter-spacing: .16em; color: #9a908a; text-transform: uppercase; align-self: flex-start; flex-shrink: 0; margin-bottom: 6px; }
+.preview-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px; letter-spacing: .16em;
+  color: #9a908a; text-transform: uppercase;
+  align-self: flex-start; flex-shrink: 0;
+  margin-bottom: 6px;
+}
 
-/* Phone — 베젤 없이 화면만, 아이폰 16 비율 (9:19.5) */
+/* Phone */
 .phone-wrap {
-  flex: 1; min-height: 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 100%;
 }
 .phone-shell {
   background: none;
   border-radius: 0; padding: 0; box-shadow: none;
   position: relative;
-  /* 높이 기준 → 아이폰16 비율로 너비 자동 결정 */
   height: 100%;
   max-height: 100%;
   aspect-ratio: 9 / 19.5;
@@ -109,30 +149,58 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #e5ddd5; min-height:
 }
 .phone-screen::-webkit-scrollbar { display: none; }
 
-/* ── RESIZE HANDLE ── */
-#resizeHandle {
-  width: 5px; flex-shrink: 0;
-  background: transparent;
-  cursor: col-resize;
-  position: relative;
-  transition: background .15s;
-  z-index: 50;
-}
-#resizeHandle:hover, #resizeHandle.dragging { background: #e87ba8; }
-#resizeHandle::after {
-  content: '';
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 1px; height: 40px;
-  background: #ddd;
-  border-radius: 1px;
-}
-#resizeHandle:hover::after, #resizeHandle.dragging::after { background: #e87ba8; }
-
 /* Scroll dots */
-.dots { display: flex; gap: 5px; justify-content: center; flex-shrink: 0; margin-top: 8px; }
-.dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(0,0,0,.18); cursor: pointer; transition: all .22s; }
+.dots {
+  display: flex; gap: 5px;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 8px;
+}
+.dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(0,0,0,.18); cursor: pointer;
+  transition: all .22s;
+}
 .dot.on { background: var(--acc); transform: scale(1.45); }
+
+/* RIGHT — EDITOR */
+.editor-panel {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  background: #f2f2f2;
+  height: 100%;
+}
+.editor-panel::-webkit-scrollbar { width: 4px; }
+.editor-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* MOBILE */
+@media (max-width: 900px) {
+  html, body { height: auto; overflow: auto; }
+  .main {
+    flex-direction: column !important;
+    height: auto !important;
+    overflow: visible;
+  }
+  .preview-panel {
+    flex: none; height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    overflow: visible; padding: 16px 16px 12px;
+  }
+  .phone-wrap {
+    flex: none; width: 100%;
+    align-items: center;
+    height: 420px;
+  }
+  .phone-shell { height: 100%; max-width: 200px; }
+  .phone-screen { border-radius: 10px; }
+  .editor-panel { overflow: visible; height: auto; }
+  .tab-bar { padding: 0 12px; }
+  .ea { padding: 22px 14px 0; }
+  .row { flex-direction: column; }
+  .gal-grid { grid-template-columns: repeat(4, 1fr); }
+}
 
 /* ═══════════════════════════════
    INVITATION SECTIONS
@@ -545,11 +613,7 @@ textarea { resize: vertical; min-height: 88px; line-height: 1.8; }
 #lightbox-next { right: 4px; }
 
 
-@media (max-width: 900px) {
-  /* 모바일: 세로 레이아웃 */
-  body { height: auto; overflow: auto; }
-  .main { flex-direction: column; min-height: auto; overflow: visible; }
-  .preview-panel {
+    .preview-panel {
     flex: none; border-right: none; border-bottom: 1px solid var(--border);
     overflow: visible; padding: 16px 16px 12px;
     height: auto;
@@ -924,7 +988,6 @@ textarea { resize: vertical; min-height: 88px; line-height: 1.8; }
 
     </div><!-- /phone-wrap -->
 </div><!-- /preview-panel -->
-</div>
 
 <!-- ══════ RESIZE HANDLE ══════ -->
 <div id="resizeHandle"></div>
