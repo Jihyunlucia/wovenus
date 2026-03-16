@@ -36,6 +36,33 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #e5ddd5; min-height:
 .btn-primary { background: var(--acc); color: #fff; font-weight: 500; }
 .btn-primary:hover { opacity: .88; }
 
+
+/* ── 발행 상태 ── */
+.btn-published {
+  background: #f0f0f0; color: #999; font-weight: 500;
+  border: 1px solid #e0e0e0; cursor: default;
+}
+.btn-update {
+  background: #4a8a6a; color: #fff; font-weight: 500;
+}
+.btn-update:hover { opacity: .88; }
+.publish-url-bar {
+  display: none; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.1); border-radius: 8px;
+  padding: 5px 10px; font-size: 11px; color: rgba(255,255,255,.7);
+  max-width: 260px; overflow: hidden;
+}
+.publish-url-text {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  flex: 1; font-family: 'Cormorant Garamond', serif; letter-spacing: .04em;
+}
+.publish-url-copy {
+  background: none; border: none; color: rgba(255,255,255,.6);
+  cursor: pointer; font-size: 13px; padding: 0; flex-shrink: 0;
+  transition: color .15s;
+}
+.publish-url-copy:hover { color: #fff; }
+
 /* ── LAYOUT ── */
 .main { display: flex; flex: 1; overflow: hidden; height: calc(100vh - 56px); }
 
@@ -43,30 +70,46 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #e5ddd5; min-height:
    LEFT — PREVIEW
 ══════════════════════════════ */
 .preview-panel {
-  flex: 0 0 320px;
+  flex: 0 0 300px;
   background: #f5f0e0;
   display: flex; flex-direction: column; align-items: center;
-  padding: 18px 14px 18px; border-right: 1px solid var(--border);
-  overflow: hidden; position: relative; gap: 10px;
+  padding: 12px 12px 12px; border-right: 1px solid var(--border);
+  overflow-y: auto; overflow-x: hidden; position: relative; gap: 6px;
 }
-.preview-label { font-family: 'Cormorant Garamond', serif; font-size: 11px; letter-spacing: .16em; color: #9a908a; text-transform: uppercase; align-self: flex-start; }
+.preview-label { font-family: 'Cormorant Garamond', serif; font-size: 11px; letter-spacing: .16em; color: #9a908a; text-transform: uppercase; align-self: flex-start; flex-shrink: 0; }
 
-/* Phone */
-.phone-wrap { width: 220px; flex-shrink: 0; }
-.phone-shell {
-  background: #12100d;
-  border-radius: 40px;
-  padding: 12px 9px;
-  box-shadow: 0 20px 56px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.07);
-  position: relative;
-  overflow: hidden;
+/* Phone — 베젤 없이 화면만, 아이폰 16 비율 (9:19.5) */
+.phone-wrap {
+  /* sticky: 에디터 스크롤해도 폰 화면 따라옴 */
+  position: sticky;
+  top: 0;
+  display: flex; flex-direction: column;
+  align-items: center;
+  width: 100%;
+  /* 뷰포트 기준 높이 — 상단바(56px) + 라벨+패딩(38px) 제외 */
+  height: calc(100vh - 56px - 38px);
+  flex-shrink: 0;
 }
-.phone-notch { width: 72px; height: 20px; background: #12100d; border-radius: 0 0 14px 14px; position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 5; }
+.phone-shell {
+  /* 베젤 없음 */
+  background: none;
+  border-radius: 0; padding: 0; box-shadow: none;
+  position: relative;
+  /* 아이폰16 비율: 높이 기준으로 너비 자동 */
+  height: 100%;
+  max-height: 100%;
+  aspect-ratio: 9 / 19.5;
+  width: auto;
+  max-width: 100%;
+  display: flex; flex-direction: column;
+  box-sizing: border-box;
+  filter: drop-shadow(0 6px 24px rgba(0,0,0,.15));
+}
+.phone-notch { display: none; }
 .phone-screen {
   background: var(--cream);
-  border-radius: 28px;
-  height: calc(100vh - 56px - 40px - 56px);
-  min-height: 420px; max-height: 620px;
+  border-radius: 12px;
+  flex: 1; min-height: 0;
   overflow-y: auto; scroll-behavior: smooth;
   position: relative;
 }
@@ -93,7 +136,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #e5ddd5; min-height:
 #resizeHandle:hover::after, #resizeHandle.dragging::after { background: #e87ba8; }
 
 /* Scroll dots */
-.dots { display: flex; gap: 5px; justify-content: center; }
+.dots { display: flex; gap: 5px; justify-content: center; flex-shrink: 0; margin-top: 8px; }
 .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(0,0,0,.18); cursor: pointer; transition: all .22s; }
 .dot.on { background: var(--acc); transform: scale(1.45); }
 
@@ -511,8 +554,9 @@ textarea { resize: vertical; min-height: 88px; line-height: 1.8; }
 @media (max-width: 900px) {
   .main { flex-direction: column; height: auto; overflow: visible; }
   .preview-panel { flex: none; border-right: none; border-bottom: 1px solid var(--border); overflow: visible; padding: 18px 12px; }
-  .phone-wrap { width: 238px; }
-  .phone-screen { height: 480px; max-height: 480px; }
+  .phone-wrap { width: 100%; max-width: 260px; flex: none; height: 480px; }
+  .phone-shell { height: 100%; }
+  .phone-screen { border-radius: 10px; }
   .editor-panel { overflow: visible; }
   .tab-bar { padding: 0 12px; }
   .ea { padding: 22px 14px 0; }
@@ -528,8 +572,13 @@ textarea { resize: vertical; min-height: 88px; line-height: 1.8; }
   <div class="logo">✦ Woven Us</div>
   <div class="topbar-r">
     <span class="save-status" id="ss"></span>
+    <!-- 발행 후 URL 표시 -->
+    <div class="publish-url-bar" id="publishUrlBar">
+      <span class="publish-url-text" id="publishUrlText"></span>
+      <button class="publish-url-copy" onclick="copyPublishUrl()" title="링크 복사">⎘</button>
+    </div>
     <button class="btn btn-ghost" id="saveBtn" onclick="doSave()">임시저장</button>
-    <button class="btn btn-primary" onclick="doPublish()">발행하기</button>
+    <button class="btn btn-primary" id="publishBtn" onclick="doPublish()">발행하기</button>
   </div>
 </div>
 
@@ -538,11 +587,9 @@ textarea { resize: vertical; min-height: 88px; line-height: 1.8; }
 <!-- ══════ LEFT: PREVIEW ══════ -->
 <div class="preview-panel" id="previewPanel">
   <div class="preview-label">✦ 미리보기</div>
-  <div style="position:sticky; top:22px; display:flex; flex-direction:column; align-items:center; gap:10px;">
-    <div class="phone-wrap">
-      <div class="phone-shell">
-        <div class="phone-notch"></div>
-        <div class="phone-screen" id="PS">
+  <div class="phone-wrap">
+    <div class="phone-shell">
+      <div class="phone-screen" id="PS">
           <div class="inv">
 
             <!-- 1. COVER -->
@@ -856,22 +903,23 @@ textarea { resize: vertical; min-height: 88px; line-height: 1.8; }
           </div><!-- /팝업 컨테이너 -->
 
         </div><!-- /phone-screen -->
-      </div>
-    </div>
+      </div><!-- /phone-shell -->
 
-    <!-- dots -->
-    <div class="dots" id="DOTS">
-      <div class="dot on" data-t="cover" onclick="goPhone('cover')"></div>
-      <div class="dot" data-t="names" onclick="goPhone('names')"></div>
-      <div class="dot" data-t="date" onclick="goPhone('date')"></div>
-      <div class="dot" data-t="msg" onclick="goPhone('msg')"></div>
-      <div class="dot" data-t="gallery" onclick="goPhone('gallery')"></div>
-      <div class="dot" data-t="venue" onclick="goPhone('venue')"></div>
-      <div class="dot" data-t="countdown" onclick="goPhone('countdown')"></div>
-      <div class="dot" data-t="cast" onclick="goPhone('cast')"></div>
-      <div class="dot" data-t="guest" onclick="goPhone('guest')"></div>
-    </div>
-  </div>
+      <!-- dots — phone-wrap 안에서 sticky 유지 -->
+      <div class="dots" id="DOTS">
+        <div class="dot on" data-t="cover" onclick="goPhone('cover')"></div>
+        <div class="dot" data-t="names" onclick="goPhone('names')"></div>
+        <div class="dot" data-t="date" onclick="goPhone('date')"></div>
+        <div class="dot" data-t="msg" onclick="goPhone('msg')"></div>
+        <div class="dot" data-t="gallery" onclick="goPhone('gallery')"></div>
+        <div class="dot" data-t="venue" onclick="goPhone('venue')"></div>
+        <div class="dot" data-t="countdown" onclick="goPhone('countdown')"></div>
+        <div class="dot" data-t="cast" onclick="goPhone('cast')"></div>
+        <div class="dot" data-t="guest" onclick="goPhone('guest')"></div>
+      </div>
+
+    </div><!-- /phone-wrap -->
+</div><!-- /preview-panel -->
 </div>
 
 <!-- ══════ RESIZE HANDLE ══════ -->
@@ -2481,7 +2529,77 @@ function loadDraft() {
     if (ss) { ss.textContent = `${timeStr} 복원됨`; ss.style.color = '#7ab87a'; setTimeout(() => ss.textContent='', 3000) }
   } catch(e) { /* 복원 실패 무시 */ }
 }
-function doPublish() { alert('청첩장이 발행되었습니다! 🎉\nhttps://wovenuswedding.kr/i/abc123') }
+function doPublish() {
+  const btn = document.getElementById('publishBtn')
+  const isPublished = localStorage.getItem('wovenusPub_published') === 'true'
+  const url = localStorage.getItem('wovenusPub_url') || generateSlug()
+
+  if (!isPublished) {
+    // 최초 발행
+    if (!confirm('발행하면 고유 링크가 생성돼요.\n발행 후에도 내용 수정은 가능하지만\n링크는 변경되지 않아요.\n\n지금 발행할까요?')) return
+    localStorage.setItem('wovenusPub_url', url)
+    localStorage.setItem('wovenusPub_published', 'true')
+    setPublishedState(url)
+    showToast('🎉 발행 완료! 링크를 복사해서 공유해보세요')
+  } else {
+    // 재업데이트
+    if (!confirm('수정된 내용을 업데이트할까요?\n기존 링크는 유지되고 내용만 갱신돼요.')) return
+    showToast('✓ 업데이트 완료!')
+  }
+}
+
+function generateSlug() {
+  // 임시 슬러그 생성 (실제 서비스에서는 서버가 생성)
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
+  return 'https://wovenuswedding.kr/i/' +
+    Array.from({length: 8}, () => chars[Math.floor(Math.random() * chars.length)]).join('')
+}
+
+function setPublishedState(url) {
+  const btn = document.getElementById('publishBtn')
+  const bar = document.getElementById('publishUrlBar')
+  const urlText = document.getElementById('publishUrlText')
+  if (btn) {
+    btn.textContent = '업데이트'
+    btn.className = 'btn btn-update'
+  }
+  if (bar && urlText) {
+    urlText.textContent = url.replace('https://', '')
+    bar.style.display = 'flex'
+  }
+}
+
+function copyPublishUrl() {
+  const url = localStorage.getItem('wovenusPub_url')
+  if (!url) return
+  navigator.clipboard?.writeText(url).then(() => {
+    showToast('링크가 복사됐어요!')
+  }).catch(() => {
+    // fallback
+    const el = document.createElement('textarea')
+    el.value = url; document.body.appendChild(el)
+    el.select(); document.execCommand('copy')
+    document.body.removeChild(el)
+    showToast('링크가 복사됐어요!')
+  })
+}
+
+function showToast(msg) {
+  let toast = document.getElementById('toast')
+  if (!toast) {
+    toast = document.createElement('div')
+    toast.id = 'toast'
+    toast.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-family:"Noto Sans KR",sans-serif;opacity:0;transition:all .3s;z-index:99999;white-space:nowrap;pointer-events:none;'
+    document.body.appendChild(toast)
+  }
+  toast.textContent = msg
+  requestAnimationFrame(() => {
+    toast.style.opacity = '1'; toast.style.transform = 'translateX(-50%) translateY(0)'
+    setTimeout(() => {
+      toast.style.opacity = '0'; toast.style.transform = 'translateX(-50%) translateY(10px)'
+    }, 2200)
+  })
+}
 
 /* ═══ INFORMATION ═══ */
 const INFO_DEFAULTS = [
