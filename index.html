@@ -26,7 +26,7 @@
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 26px; height: 56px; flex-shrink: 0; z-index: 100;
 }
-.logo { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; letter-spacing: .12em; color: rgba(255,255,255,.92); }
+.logo { font-family: 'Noto Sans KR', sans-serif; font-size: 17px; font-weight: 400; letter-spacing: .08em; color: rgba(255,255,255,.92); }
 .topbar-r { display: flex; align-items: center; gap: 10px; }
 .save-status { font-size: 11px; color: #777; min-width: 60px; text-align: right; }
 .btn { border: none; cursor: pointer; border-radius: 7px; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; padding: 8px 18px; transition: all .2s; }
@@ -53,7 +53,7 @@
 }
 .publish-url-text {
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  flex: 1; font-family: 'Cormorant Garamond', serif; letter-spacing: .04em;
+  flex: 1; font-family: 'Noto Sans KR', sans-serif; font-size: 11px; letter-spacing: .02em;
 }
 .publish-url-copy {
   background: none; border: none; color: rgba(255,255,255,.6);
@@ -95,8 +95,9 @@ body {
    LEFT — PREVIEW
 ══════════════════════════════ */
 .preview-panel {
-  flex: 0 0 600px;
-  min-width: 0;
+  flex: 0 0 55vw;
+  max-width: 800px;
+  min-width: 400px;
   background: #f5f0e0;
   display: flex;
   flex-direction: column;
@@ -130,11 +131,12 @@ body {
   background: none;
   border-radius: 0; padding: 0; box-shadow: none;
   position: relative;
-  height: 100%;
-  max-height: 100%;
+  /* 높이 100%에서 9:19.5 비율로 너비 자동 결정 */
+  height: calc(100vh - 56px - 40px);
+  max-height: calc(100vh - 56px - 40px);
   aspect-ratio: 9 / 19.5;
   width: auto;
-  max-width: 100%;
+  max-width: 90%;
   display: flex; flex-direction: column;
   box-sizing: border-box;
   filter: drop-shadow(0 6px 24px rgba(0,0,0,.15));
@@ -205,7 +207,7 @@ body {
 /* ═══════════════════════════════
    INVITATION SECTIONS
 ═══════════════════════════════ */
-.inv { background: var(--ww); font-family: 'Noto Serif KR', serif; color: var(--deep); display: flex; flex-direction: column; }
+.inv { background: var(--ww); font-family: 'Noto Sans KR', sans-serif; color: var(--deep); display: flex; flex-direction: column; }
 
 /* ── 1. COVER ── */
 .sec-cover { position: relative; flex-shrink: 0; }
@@ -401,7 +403,7 @@ body {
 }
 .guest-card.active { display: flex; }
 @keyframes cardIn { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
-.guest-card-msg { font-size: 11px; color: var(--mid); line-height: 1.85; text-align: left; font-family: 'Noto Serif KR', serif; font-weight: 300; }
+.guest-card-msg { font-size: 11px; color: var(--mid); line-height: 1.85; text-align: left; font-family: 'Noto Sans KR', sans-serif; font-weight: 300; }
 .guest-card-from { font-size: 10px; color: var(--light); text-align: right; margin-top: 4px; font-family: 'Cormorant Garamond', serif; font-style: italic; }
 .guest-card-from strong { color: var(--mid); font-style: normal; }
 .guest-card-date { font-size: 9px; color: var(--border); text-align: right; letter-spacing: .06em; }
@@ -483,7 +485,7 @@ body {
 .card { background: #ffffff; border: 1px solid #e8e8e8; border-radius: 14px; margin-bottom: 22px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
 .card-head { padding: 13px 20px; background: #f7f7f7; border-bottom: 1px solid #eeeeee; display: flex; align-items: center; gap: 8px; position: relative; }
 .card-icon { font-size: 15px; }
-.card-title { font-family: 'Cormorant Garamond', serif; font-size: 15px; color: #1a1a1a; letter-spacing: .04em; }
+.card-title { font-family: 'Noto Sans KR', sans-serif; font-size: 14px; font-weight: 500; color: #1a1a1a; letter-spacing: .01em; }
 .card-body { padding: 20px 22px; display: flex; flex-direction: column; gap: 16px; background: #ffffff; }
 
 /* form elements */
@@ -667,7 +669,7 @@ textarea { resize: vertical; min-height: 88px; line-height: 1.8; }
               </div>
               <div class="cover-text">
                 <span class="std" id="STD">Save the Date</span>
-                <span class="ow" id="OW">Our Wedding</span>
+                <span class="ow" id="OW">Our Wedding Day</span>
               </div>
             </div>
 
@@ -1104,7 +1106,7 @@ textarea { resize: vertical; min-height: 88px; line-height: 1.8; }
           <button class="btn btn-ghost" onclick="rmCover()" style="font-size:12px;padding:7px 14px;width:100%;">사진 제거</button>
           <div class="fg"><label>상단 소제목</label><input type="text" id="STDI" value="through the lens of love" oninput="syncCover()"></div>
           <div class="fg"><label>메인 필기체 텍스트</label>
-            <input type="text" id="OWI" value="Our Vintage Story" oninput="syncCover()" style="font-family:'Great Vibes',cursive;font-size:20px;color:var(--acc);">
+            <input type="text" id="OWI" value="Our Wedding Day" oninput="syncCover()" style="font-family:'Great Vibes',cursive;font-size:20px;color:var(--acc);">
           </div>
         </div>
       </div>
@@ -2858,7 +2860,7 @@ function syncPreviewOrder(tabId) {
   const preview = document.getElementById('previewPanel')
   if (!handle || !preview) return
   let startX = 0, startW = 0, dragging = false
-  const MIN_W = 360, MAX_W = 800
+  const MIN_W = 320, MAX_W = 900
   handle.addEventListener('mousedown', e => {
     dragging = true; startX = e.clientX; startW = preview.offsetWidth
     handle.classList.add('dragging')
@@ -2877,7 +2879,7 @@ function syncPreviewOrder(tabId) {
     document.body.style.cursor = ''; document.body.style.userSelect = ''
   })
   // 더블클릭: 기본값 리셋
-  handle.addEventListener('dblclick', () => { preview.style.flex = '0 0 600px' })
+  handle.addEventListener('dblclick', () => { preview.style.flex = '0 0 55vw' })
 })()
 
  sync(); onMsg(); buildGuestCarousel(); resetGuestTimer(); initReveal(); loadDraft()
